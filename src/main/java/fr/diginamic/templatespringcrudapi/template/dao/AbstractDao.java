@@ -20,9 +20,8 @@ public abstract class AbstractDao<T, ID> implements IDao<T, ID>
     
     @Override public List<T> findAll()
     {
-        
-        String querry = "SELECT e FROM " + entityClass.getSimpleName() + " e";
-        return em.createQuery(querry, entityClass).getResultList();
+        String query = "SELECT e FROM " + entityClass.getSimpleName() + " e";
+        return em.createQuery(query, entityClass).getResultList();
     }
     
     @Override public T findById(ID id)
