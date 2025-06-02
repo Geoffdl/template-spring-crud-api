@@ -65,8 +65,28 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/geoffdl/template-spring-crud-api</url>
+        </repository>
+    </repositories>
     <build>
+        <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.4.2</version>
+            <configuration>
+                <excludes>
+                    <exclude>**/test/**</exclude>
+                    <exclude>**/Test*.class</exclude>
+                    <exclude>**/*Test.class</exclude>
+                </excludes>
+            </configuration>
+        </plugin>
+    </plugins>
     </build>
 
 </project>
