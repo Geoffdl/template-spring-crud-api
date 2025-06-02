@@ -8,7 +8,7 @@ import java.util.List;
 
 public abstract class AbstractController<T, ID, DTO>
 {
-    abstract IService<T, ID, DTO> getService();
+    public abstract IService<T, ID, DTO> getService();
     
     public ResponseEntity<List<DTO>> findAll()
     {
