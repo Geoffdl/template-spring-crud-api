@@ -10,7 +10,7 @@
     </parent>
     <groupId>fr.diginamic</groupId>
     <artifactId>template-spring-crud-api</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <name>template-spring-crud-api</name>
     <packaging>jar</packaging>
     <description>template-spring-crud-api</description>
