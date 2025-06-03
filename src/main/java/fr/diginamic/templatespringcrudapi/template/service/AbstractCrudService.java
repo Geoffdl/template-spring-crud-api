@@ -3,10 +3,13 @@ package fr.diginamic.templatespringcrudapi.template.service;
 
 
 import fr.diginamic.templatespringcrudapi.template.dao.IDao;
+import fr.diginamic.templatespringcrudapi.template.entity.IIdentifiable;
 import fr.diginamic.templatespringcrudapi.template.mapper.IMapper;
 import fr.diginamic.templatespringcrudapi.template.validation.IValidator;
 import fr.diginamic.templatespringcrudapi.template.validation.ValidationError;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
 /**
@@ -15,7 +18,7 @@ import java.util.List;
  * @param <ID> JPA entity's id type
  * @param <DTO> JPA entity DTO mapping
  */
-public class AbstractCrudService<T, ID, DTO> implements IService<T, ID, DTO>
+public class AbstractCrudService<T extends IIdentifiable<ID>, ID, DTO> implements IService<T, ID, DTO>
 {
     /**
      * validator implementation
@@ -51,7 +54,7 @@ public class AbstractCrudService<T, ID, DTO> implements IService<T, ID, DTO>
                   .toList();
     }
     
-    @Override
+    @Override @Transactional
     public DTO insert(T entity)
     {
         List<ValidationError> errors = validator.verifier(entity);
@@ -59,7 +62,9 @@ public class AbstractCrudService<T, ID, DTO> implements IService<T, ID, DTO>
         {
             throw new RuntimeException(errors.getFirst().message());
         }
-        
+        if(dao.findById(entity.getId()) != null){
+            throw new RuntimeException(entity.getClass().getSimpleName() + " already exists with this id");
+        }
         T savedEntity = dao.save(entity);
         return mapper.toDto(savedEntity);
     }
@@ -74,7 +79,7 @@ public class AbstractCrudService<T, ID, DTO> implements IService<T, ID, DTO>
         return mapper.toDto(entity);
     }
     
-    @Override
+    @Override @Transactional
     public DTO update(T entity)
     {
         List<ValidationError> errors = validator.verifier(entity);
@@ -82,12 +87,14 @@ public class AbstractCrudService<T, ID, DTO> implements IService<T, ID, DTO>
         {
             throw new RuntimeException(errors.getFirst().message());
         }
-        
+        if(dao.findById(entity.getId()) == null){
+            throw new RuntimeException(entity.getClass().getSimpleName() + " doesn't exists with this id");
+        }
         T updatedEntity = dao.save(entity);
         return mapper.toDto(updatedEntity);
     }
     
-    @Override
+    @Override @Transactional
     public void delete(ID id)
     {
         if (dao.findById(id) == null)

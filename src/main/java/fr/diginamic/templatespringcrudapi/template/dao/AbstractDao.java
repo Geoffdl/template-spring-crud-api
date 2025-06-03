@@ -29,7 +29,7 @@ public abstract class AbstractDao<T, ID> implements IDao<T, ID>
         return em.find(entityClass, id);
     }
     
-    @Override @Transactional public T save(T entity)
+    @Override public T save(T entity)
     {
         em.persist(entity);
         return entity;

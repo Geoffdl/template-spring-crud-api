@@ -18,7 +18,7 @@ public abstract class AbstractController<T, ID, DTO>
      * Returns an instance of an IService implementation containing methods for crud operations and data validation logic
      * @return an instance IService implementation
      */
-    public abstract IService<T, ID, DTO> getService();
+    protected abstract IService<T, ID, DTO> getService();
     
     /**
      * Finds all entities and returns a complete list of DTO
