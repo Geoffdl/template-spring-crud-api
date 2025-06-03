@@ -1,6 +1,7 @@
 package fr.diginamic.templatespringcrudapi.template.service;
 
 import fr.diginamic.templatespringcrudapi.template.entity.IIdentifiable;
+import fr.diginamic.templatespringcrudapi.template.exception.FunctionnalException;
 
 import java.util.List;
 
@@ -23,23 +24,23 @@ public interface ICrudService<T extends IIdentifiable<ID>, ID, DTO>
      * @param entity jpa entity
      * @return entity mapped to dto
      */
-    DTO insert(T entity);
+    DTO insert(T entity) throws FunctionnalException;
     /**
      * find by id
      * @param id jpa entity's id
      * @return entity mapped to dto
      */
-    DTO findById(ID id);
+    DTO findById(ID id) throws FunctionnalException;
     /**
      * update one
      * @param entity jpa entity
      * @return entity mapped to dto
      */
-    DTO update(T entity);
+    DTO update(T entity) throws FunctionnalException;
     
     /**
      * delete one
      * @param id jpa entity's id
      */
-    void delete(ID id);
+    void delete(ID id) throws FunctionnalException;
 }

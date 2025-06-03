@@ -2,7 +2,7 @@ package fr.diginamic.templatespringcrudapi.template.dao;
 
 import java.util.List;
 
-public interface IDao<T, ID>
+public interface IAbstractDao<T, ID>
 {
     List<T> findAll();
     

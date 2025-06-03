@@ -1,20 +1,19 @@
 package fr.diginamic.templatespringcrudapi.template.service;
 
-
-
-import fr.diginamic.templatespringcrudapi.template.dao.IDao;
 import fr.diginamic.templatespringcrudapi.template.entity.IIdentifiable;
+import fr.diginamic.templatespringcrudapi.template.exception.FunctionnalException;
 import fr.diginamic.templatespringcrudapi.template.mapper.IMapper;
+import fr.diginamic.templatespringcrudapi.template.repository.IEntityRepository;
+import fr.diginamic.templatespringcrudapi.template.utils.ValidationHelper;
 import fr.diginamic.templatespringcrudapi.template.validation.IValidator;
-import fr.diginamic.templatespringcrudapi.template.validation.ValidationError;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
  * Abstract class for CRUD operations on a JPA entity. Contains generic default methods reading to use for child classes
- * @param <T> JPA entity
- * @param <ID> JPA entity's id type
+ * @param <T>   JPA entity
+ * @param <ID>  JPA entity's id type
  * @param <DTO> JPA entity DTO mapping
  */
 public class AbstractCrudService<T extends IIdentifiable<ID>, ID, DTO> implements ICrudService<T, ID, DTO>
@@ -27,79 +26,80 @@ public class AbstractCrudService<T extends IIdentifiable<ID>, ID, DTO> implement
      * mapper implementation
      */
     protected final IMapper<T, DTO> mapper;
+    
     /**
-     * dao implementation
+     * repository implementation
      */
-    protected final IDao<T, ID> dao;
+    protected final IEntityRepository<T, ID> repository;
     
     /**
      * constructor for child classes to @Autowired
-     * @param validator validator implementation
-     * @param iMapper mapper implementation
-     * @param dao dao implementation
+     * @param validator  validator implementation
+     * @param iMapper    mapper implementation
+     * @param repository implementation
      */
-    protected AbstractCrudService(IValidator<T> validator, IMapper<T, DTO> iMapper, IDao<T, ID> dao)
+    protected AbstractCrudService(IValidator<T> validator, IMapper<T, DTO> iMapper, IEntityRepository<T, ID> repository)
     {
         this.validator = validator;
         this.mapper = iMapper;
-        this.dao = dao;
+        this.repository = repository;
     }
     
     @Override
     public List<DTO> findAll()
     {
-        return dao.findAll().stream()
-                  .map(mapper::toDto)
-                  .toList();
+        return repository.findAll().stream()
+                         .map(mapper::toDto)
+                         .toList();
     }
     
-    @Override @Transactional
-    public DTO insert(T entity)
+    @Override
+    @Transactional
+    public DTO insert(T entity) throws FunctionnalException
     {
-        List<ValidationError> errors = validator.verifier(entity);
-        if (!errors.isEmpty())
+        ValidationHelper.validateEntity(entity, validator);
+        
+        if (repository.existsById(entity.getId()))
         {
-            throw new RuntimeException(errors.getFirst().message());
+            throw new FunctionnalException(
+                  String.format("%s already exists with id: %s", entity.getClass().getSimpleName(), entity.getId())
+            );
         }
-        if(dao.findById(entity.getId()) != null){
-            throw new RuntimeException(entity.getClass().getSimpleName() + " already exists with this id");
-        }
-        T savedEntity = dao.save(entity);
+        
+        T savedEntity = repository.save(entity);
         return mapper.toDto(savedEntity);
     }
     
     @Override
-    public DTO findById(ID id)
+    public DTO findById(ID id) throws FunctionnalException
     {
-        T entity = dao.findById(id);
-        if(entity == null){
-            throw new RuntimeException("Entity not found with id: " + id);
-        }
+        T entity = repository.findById(id)
+                             .orElseThrow(() -> new FunctionnalException("Entity not found with id: " + id));
         return mapper.toDto(entity);
     }
     
-    @Override @Transactional
-    public DTO update(T entity)
+    @Override
+    @Transactional
+    public DTO update(T entity) throws FunctionnalException
     {
-        List<ValidationError> errors = validator.verifier(entity);
-        if (!errors.isEmpty())
+        ValidationHelper.validateEntity(entity, validator);
+        
+        if (!repository.existsById(entity.getId()))
         {
-            throw new RuntimeException(errors.getFirst().message());
+            throw new FunctionnalException(entity.getClass().getSimpleName() + " doesn't exists with this id");
         }
-        if(dao.findById(entity.getId()) == null){
-            throw new RuntimeException(entity.getClass().getSimpleName() + " doesn't exists with this id");
-        }
-        T updatedEntity = dao.save(entity);
+        T updatedEntity = repository.save(entity);
         return mapper.toDto(updatedEntity);
     }
     
-    @Override @Transactional
-    public void delete(ID id)
+    @Override
+    @Transactional
+    public void delete(ID id) throws FunctionnalException
     {
-        if (dao.findById(id) == null)
+        if (!repository.existsById(id))
         {
-            throw new RuntimeException("Entity not found with id: " + id);
+            throw new FunctionnalException("Entity not found with id: " + id);
         }
-        dao.delete(id);
+        repository.deleteById(id);
     }
 }

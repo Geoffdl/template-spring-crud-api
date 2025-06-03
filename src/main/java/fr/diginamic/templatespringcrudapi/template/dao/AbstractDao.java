@@ -2,11 +2,10 @@ package fr.diginamic.templatespringcrudapi.template.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 
-public abstract class AbstractDao<T, ID> implements IDao<T, ID>
+public abstract class AbstractDao<T, ID> implements IAbstractDao<T, ID>
 {
     
     private final Class<T> entityClass;
