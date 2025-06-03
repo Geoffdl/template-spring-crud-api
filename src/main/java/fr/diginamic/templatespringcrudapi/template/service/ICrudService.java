@@ -1,5 +1,7 @@
 package fr.diginamic.templatespringcrudapi.template.service;
 
+import fr.diginamic.templatespringcrudapi.template.entity.IIdentifiable;
+
 import java.util.List;
 
 /**
@@ -8,7 +10,7 @@ import java.util.List;
  * @param <ID> JPA Entity's type
  * @param <DTO> JPA entity DTO mapping
  */
-public interface IService<T, ID, DTO>
+public interface ICrudService<T extends IIdentifiable<ID>, ID, DTO>
 {
     /**
      * find all

@@ -9,7 +9,6 @@ import fr.diginamic.templatespringcrudapi.template.validation.IValidator;
 import fr.diginamic.templatespringcrudapi.template.validation.ValidationError;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
 /**
@@ -18,7 +17,7 @@ import java.util.List;
  * @param <ID> JPA entity's id type
  * @param <DTO> JPA entity DTO mapping
  */
-public class AbstractCrudService<T extends IIdentifiable<ID>, ID, DTO> implements IService<T, ID, DTO>
+public class AbstractCrudService<T extends IIdentifiable<ID>, ID, DTO> implements ICrudService<T, ID, DTO>
 {
     /**
      * validator implementation

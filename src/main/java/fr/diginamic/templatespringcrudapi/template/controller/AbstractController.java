@@ -1,6 +1,7 @@
 package fr.diginamic.templatespringcrudapi.template.controller;
 
-import fr.diginamic.templatespringcrudapi.template.service.IService;
+import fr.diginamic.templatespringcrudapi.template.entity.IIdentifiable;
+import fr.diginamic.templatespringcrudapi.template.service.ICrudService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,13 +13,13 @@ import java.util.List;
  * @param <ID> JPA Entity's id type
  * @param <DTO> DTO mapping of the JPA Entity
  */
-public abstract class AbstractController<T, ID, DTO>
+public abstract class AbstractController<T extends IIdentifiable<ID>, ID, DTO>
 {
     /**
      * Returns an instance of an IService implementation containing methods for crud operations and data validation logic
      * @return an instance IService implementation
      */
-    protected abstract IService<T, ID, DTO> getService();
+    protected abstract ICrudService<T, ID, DTO> getService();
     
     /**
      * Finds all entities and returns a complete list of DTO
