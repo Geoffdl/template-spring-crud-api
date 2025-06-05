@@ -2,6 +2,7 @@ package fr.diginamic.templatespringcrudapi.template.controller;
 
 import fr.diginamic.templatespringcrudapi.template.entity.IIdentifiable;
 import fr.diginamic.templatespringcrudapi.template.exception.FunctionnalException;
+import fr.diginamic.templatespringcrudapi.template.exception.TechnicalException;
 import fr.diginamic.templatespringcrudapi.template.service.ICrudService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -50,7 +51,7 @@ public interface IAbstractController<T extends IIdentifiable<ID>, ID, DTO>
           @ApiResponse(responseCode = "404", description = "Entité non trouvée", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
     })
     @GetMapping("/{id}")
-    ResponseEntity<DTO> findById(@PathVariable ID id) throws FunctionnalException;
+    ResponseEntity<DTO> findById(@PathVariable ID id) throws FunctionnalException, TechnicalException;
     
     /**
      * Crée une nouvelle entité.
@@ -64,7 +65,7 @@ public interface IAbstractController<T extends IIdentifiable<ID>, ID, DTO>
           @ApiResponse(responseCode = "400", description = "Requête invalide", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
     })
     @PostMapping
-    ResponseEntity<DTO> insert(@RequestBody T entity) throws FunctionnalException;
+    ResponseEntity<DTO> insert(@RequestBody T entity) throws FunctionnalException, TechnicalException;
     
     /**
      * Met à jour une entité existante.
@@ -79,7 +80,7 @@ public interface IAbstractController<T extends IIdentifiable<ID>, ID, DTO>
           @ApiResponse(responseCode = "404", description = "Entité non trouvée", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
     })
     @PutMapping
-    ResponseEntity<DTO> update(@RequestBody T entity) throws FunctionnalException;
+    ResponseEntity<DTO> update(@RequestBody T entity) throws FunctionnalException, TechnicalException;
     
     /**
      * Supprime une entité par son identifiant.

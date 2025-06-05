@@ -2,6 +2,7 @@ package fr.diginamic.templatespringcrudapi.template.controller;
 
 import fr.diginamic.templatespringcrudapi.template.entity.IIdentifiable;
 import fr.diginamic.templatespringcrudapi.template.exception.FunctionnalException;
+import fr.diginamic.templatespringcrudapi.template.exception.TechnicalException;
 import fr.diginamic.templatespringcrudapi.template.service.ICrudService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,21 +45,21 @@ public abstract class AbstractController<T extends IIdentifiable<ID>, ID, DTO> i
     
     @GetMapping("/{id}")
     @Override
-    public ResponseEntity<DTO> findById(@PathVariable ID id) throws FunctionnalException
+    public ResponseEntity<DTO> findById(@PathVariable ID id) throws FunctionnalException, TechnicalException
     {
         return ResponseEntity.ok(getService().findById(id));
     }
     
     @PostMapping
     @Override
-    public ResponseEntity<DTO> insert(@RequestBody T entity) throws FunctionnalException
+    public ResponseEntity<DTO> insert(@RequestBody T entity) throws FunctionnalException, TechnicalException
     {
         return ResponseEntity.ok(getService().insert(entity));
     }
     
     @PutMapping
     @Override
-    public ResponseEntity<DTO> update(@RequestBody T entity) throws FunctionnalException
+    public ResponseEntity<DTO> update(@RequestBody T entity) throws FunctionnalException, TechnicalException
     {
         return ResponseEntity.ok(getService().update(entity));
     }
